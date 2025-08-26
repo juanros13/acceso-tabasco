@@ -20,6 +20,7 @@
 		<module>config-server</module>
 		<module>gateway-service</module>
 		<module>auth-service</module>
+		<module>user-management-service</module>
 	</modules>
 	<url/>
 	<licenses>
