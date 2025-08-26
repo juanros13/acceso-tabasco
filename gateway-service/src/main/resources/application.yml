@@ -7,38 +7,24 @@ spring:
   
   cloud:
     gateway:
-      routes:
-        - id: service-route
-          uri: http://localhost:8081
-          predicates:
-            - Path=/api/**
-          filters:
-            - StripPrefix=1
-            - name: RequestRateLimiter
-              args:
-                redis-rate-limiter.replenishRate: 10
-                redis-rate-limiter.burstCapacity: 20
-        
-        - id: auth-service-route
-          uri: http://localhost:8082
-          predicates:
-            - Path=/auth/**
-          filters:
-            - StripPrefix=1
-
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowedOriginPatterns: "*"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-              - OPTIONS
-            allowedHeaders: "*"
-            allowCredentials: true
-            maxAge: 3600
+      # Rutas configuradas programáticamente en GatewayConfig.java
+      server:
+        webflux:
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowedOriginPatterns: "*"
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                  - OPTIONS
+                allowedHeaders: "*"
+                allowCredentials: true
+                maxAge: 3600
+          default-filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
 
   security:
     oauth2:
@@ -79,14 +65,15 @@ logging:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
 
 # Gateway specific configuration
-gateway:
-  allowed-origins:
-    - http://localhost:3000
-    - http://localhost:4200
-  routes:
-    user-service:
-      uri: http://localhost:8081
-      path: /users/**
-    auth-service:
-      uri: http://localhost:8082  
-      path: /auth/**
+# Configuración específica de gateway (no deprecated)
+app:
+  gateway:
+    allowed-origins:
+      - http://localhost:3000
+      - http://localhost:4200
+    security:
+      public-paths:
+        - /actuator/**
+        - /public/**
+        - /auth/login
+        - /auth/register
