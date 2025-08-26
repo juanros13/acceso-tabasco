@@ -21,6 +21,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-config-server</artifactId>
         </dependency>
+        
 
         <!-- Spring Boot Web -->
         <dependency>

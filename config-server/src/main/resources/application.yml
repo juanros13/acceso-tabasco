@@ -5,7 +5,7 @@ spring:
   application:
     name: config-server
   profiles:
-    active: dev
+    active: dev,native
 
 # Actuator endpoints
 management:
