@@ -25,8 +25,8 @@ docker-compose down
 # Iniciar según el perfil
 switch ($Profile) {
     "basic" {
-        Write-Host "Iniciando servicios basicos (Discovery + Config + Gateway)..." -ForegroundColor Green
-        docker-compose up --build -d discovery-service config-server gateway-service
+        Write-Host "Iniciando servicios basicos (Config + Discovery + Gateway)..." -ForegroundColor Green
+        docker-compose up --build -d config-server discovery-service gateway-service
     }
     "full" {
         Write-Host "Iniciando todos los servicios..." -ForegroundColor Green

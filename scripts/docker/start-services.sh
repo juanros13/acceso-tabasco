@@ -21,8 +21,8 @@ docker-compose down
 # Iniciar según el perfil
 case $PROFILE in
     "basic")
-        echo "🏗️ Iniciando servicios básicos (Discovery + Config + Gateway)..."
-        docker-compose up --build -d discovery-service config-server gateway-service
+        echo "🏗️ Iniciando servicios básicos (Config + Discovery + Gateway)..."
+        docker-compose up --build -d config-server discovery-service gateway-service
         ;;
     "full")
         echo "🏗️ Iniciando todos los servicios..."

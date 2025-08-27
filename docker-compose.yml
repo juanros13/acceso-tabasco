@@ -1,33 +1,14 @@
-version: '3.8'
-
 services:
-  # Discovery Service (Eureka) - Debe iniciar primero
-  discovery-service:
-    build: ./discovery-service
-    container_name: acceso-discovery
-    ports:
-      - "8761:8761"
-    networks:
-      - acceso-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
-
-  # Config Server - Debe iniciar segundo
+  # Config Server - Debe iniciar primero
   config-server:
-    build: ./config-server
+    build:
+      context: .
+      dockerfile: config-server/Dockerfile
     container_name: acceso-config
     ports:
       - "8888:8888"
-    depends_on:
-      discovery-service:
-        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-service:8761/eureka
     env_file:
       - .env
     networks:
@@ -39,14 +20,37 @@ services:
       retries: 5
       start_period: 60s
 
-  # Gateway Service - Inicia después del config-server
+  # Discovery Service (Eureka) - Ahora depende del config-server
+  discovery-service:
+    build:
+      context: .
+      dockerfile: discovery-service/Dockerfile
+    container_name: acceso-discovery
+    ports:
+      - "8761:8761"
+    depends_on:
+      config-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+    networks:
+      - acceso-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+  # Gateway Service - Inicia después del discovery-service
   gateway-service:
     build: ./gateway-service
     container_name: acceso-gateway
     ports:
       - "8080:8080"
     depends_on:
-      config-server:
+      discovery-service:
         condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=dev
@@ -70,7 +74,7 @@ services:
     ports:
       - "8081:8081"
     depends_on:
-      config-server:
+      discovery-service:
         condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=dev
@@ -90,7 +94,7 @@ services:
     ports:
       - "8082:8082"
     depends_on:
-      config-server:
+      discovery-service:
         condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=dev
