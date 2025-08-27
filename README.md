@@ -272,19 +272,29 @@ services:
 ### Comandos de Ejecución
 
 #### Desarrollo Local
-```bash
-# 1. Iniciar infraestructura
-docker-compose up -d mysql keycloak eureka config-server
 
+**Iniciar Servicios Base:**
+```powershell
+# Windows (PowerShell)
+powershell -ExecutionPolicy Bypass -File scripts/windows/start-config.ps1
+```
+
+```bash
+# Linux/Mac/Git Bash
+chmod +x scripts/unix/start-config.sh
+scripts/unix/start-config.sh
+```
+
+**Servicios adicionales:**
+```bash
 # 2. Ejecutar servicios core
 ./mvnw spring-boot:run -pl gateway-service
 ./mvnw spring-boot:run -pl auth-service  
-./mvnw spring-boot:run -pl user-service
+./mvnw spring-boot:run -pl user-management-service
 
-# 3. Ejecutar servicios de integración
-./mvnw spring-boot:run -pl email-service
-./mvnw spring-boot:run -pl repository-service
-./mvnw spring-boot:run -pl meeting-service
+# 3. Verificar servicios
+curl http://localhost:8761    # Eureka Dashboard
+curl http://localhost:8888/actuator/health  # Config Server
 ```
 
 #### Producción

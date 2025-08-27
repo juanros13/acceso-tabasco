@@ -40,8 +40,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_ISSUER_URI:https://auth.tabasco.gob.mx/realms/gobierno-tabasco}
-          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI:https://auth.tabasco.gob.mx/realms/gobierno-tabasco/protocol/openid-connect/certs}
+          issuer-uri: ${KEYCLOAK_ISSUER_URI}
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI}
           cache-duration: PT1H
 
 # Eureka Client - Production
@@ -62,11 +62,14 @@ eureka:
       management.port: ${management.server.port:8081}
       management.context-path: ${management.endpoints.web.base-path:/actuator}
 
-# Keycloak Production
+# Keycloak Production - All secrets from environment variables
 keycloak:
-  realm: gobierno-tabasco
-  auth-server-url: ${KEYCLOAK_URL:https://auth.tabasco.gob.mx}
-  resource: gateway-client
+  url: ${KEYCLOAK_URL}
+  realm: ${KEYCLOAK_REALM}
+  client-secret: ${KEYCLOAK_CLIENT_SECRET}
+  client-id: ${KEYCLOAK_CLIENT_ID}
+  auth-server-url: ${KEYCLOAK_URL}
+  resource: ${KEYCLOAK_CLIENT_ID}
   public-client: false
   verify-token-audience: true
   use-resource-role-mappings: true

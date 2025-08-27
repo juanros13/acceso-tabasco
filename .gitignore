@@ -31,3 +31,13 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Security - NO COMMITEAR ARCHIVOS CON SECRETS ###
+.env
+.env.local
+.env.production
+docker-compose.secrets.yml
+secrets.yml
+application-secrets.yml
+**/src/main/resources/application-local.yml
+**/secrets/

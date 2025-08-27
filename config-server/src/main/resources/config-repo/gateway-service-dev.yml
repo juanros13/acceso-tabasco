@@ -1,0 +1,82 @@
+# Gateway Service - Configuración de Desarrollo
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-service
+  
+  cloud:
+    gateway:
+      server:
+        webflux:
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowedOriginPatterns: "*"
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                  - OPTIONS
+                allowedHeaders: "*"
+                allowCredentials: true
+                maxAge: 3600
+          default-filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Configuración para Keycloak en desarrollo
+          issuer-uri: http://localhost:8180/realms/acceso-tabasco
+          jwk-set-uri: http://localhost:8180/realms/acceso-tabasco/protocol/openid-connect/certs
+
+# Configuración de Keycloak para desarrollo
+keycloak:
+  realm: acceso-tabasco
+  auth-server-url: http://localhost:8180
+  ssl-required: none
+  resource: gateway-client
+  credentials:
+    secret: dev-client-secret
+  use-resource-role-mappings: true
+  bearer-only: true
+
+# Actuator endpoints para desarrollo
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# Logging detallado para desarrollo
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web.reactive: DEBUG
+    saf.cgmaig: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Gateway specific configuration para desarrollo
+app:
+  gateway:
+    allowed-origins:
+      - http://localhost:3000
+      - http://localhost:4200
+      - http://localhost:5173
+    security:
+      public-paths:
+        - /actuator/**
+        - /public/**
+        - /auth/login
+        - /auth/register
+        - /swagger-ui/**
+        - /v3/api-docs/**
