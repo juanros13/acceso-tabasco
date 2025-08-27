@@ -109,25 +109,42 @@ EUREKA_SERVER_URL=http://localhost:8761/eureka
 - Configuraciones con `${VARIABLE}` placeholders
 - Esta documentación
 
-## Scripts de Inicio
+## Inicio de Servicios con Docker
 
 ### Windows (PowerShell)
 ```powershell
-# Iniciar config-server con variables de entorno
-powershell -ExecutionPolicy Bypass -File scripts/windows/start-config.ps1
+# Servicios básicos (Discovery + Config + Gateway)
+powershell -ExecutionPolicy Bypass -File scripts/docker/start-services.ps1 basic
+
+# Todos los servicios (incluye Auth y User Management)
+powershell -ExecutionPolicy Bypass -File scripts/docker/start-services.ps1 full
 ```
 
 ### Linux/Mac/Git Bash
 ```bash
 # Hacer ejecutable (solo la primera vez)
-chmod +x scripts/unix/start-config.sh
+chmod +x scripts/docker/start-services.sh
 
-# Iniciar config-server con variables de entorno
-scripts/unix/start-config.sh
+# Servicios básicos
+scripts/docker/start-services.sh basic
 
-# O cargar variables manualmente
-source scripts/unix/load-env.sh
-cd config-server && ./mvnw spring-boot:run
+# Todos los servicios
+scripts/docker/start-services.sh full
+```
+
+### Manual con Docker Compose
+```bash
+# Servicios básicos
+docker-compose up --build -d discovery-service config-server gateway-service
+
+# Todos los servicios
+docker-compose --profile full up --build -d
+
+# Ver logs
+docker-compose logs -f
+
+# Detener servicios
+docker-compose down
 ```
 
 ## Comandos de Deployment

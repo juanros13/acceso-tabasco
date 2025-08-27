@@ -273,28 +273,36 @@ services:
 
 #### Desarrollo Local
 
-**Iniciar Servicios Base:**
+**Iniciar con Docker (Recomendado):**
 ```powershell
-# Windows (PowerShell)
-powershell -ExecutionPolicy Bypass -File scripts/windows/start-config.ps1
+# Windows - Servicios básicos
+powershell -ExecutionPolicy Bypass -File scripts/docker/start-services.ps1 basic
+
+# Windows - Todos los servicios
+powershell -ExecutionPolicy Bypass -File scripts/docker/start-services.ps1 full
 ```
 
 ```bash
-# Linux/Mac/Git Bash
-chmod +x scripts/unix/start-config.sh
-scripts/unix/start-config.sh
+# Linux/Mac - Servicios básicos
+chmod +x scripts/docker/start-services.sh
+scripts/docker/start-services.sh basic
+
+# Linux/Mac - Todos los servicios
+scripts/docker/start-services.sh full
 ```
 
-**Servicios adicionales:**
+**Manual con Docker Compose:**
 ```bash
-# 2. Ejecutar servicios core
-./mvnw spring-boot:run -pl gateway-service
-./mvnw spring-boot:run -pl auth-service  
-./mvnw spring-boot:run -pl user-management-service
+# Servicios básicos (Discovery + Config + Gateway)
+docker-compose up --build -d discovery-service config-server gateway-service
 
-# 3. Verificar servicios
+# Todos los servicios
+docker-compose --profile full up --build -d
+
+# Verificar servicios
 curl http://localhost:8761    # Eureka Dashboard
 curl http://localhost:8888/actuator/health  # Config Server
+curl http://localhost:8080/actuator/health  # Gateway
 ```
 
 #### Producción
